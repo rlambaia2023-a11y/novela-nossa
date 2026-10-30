@@ -1,0 +1,1 @@
+{"build":{"builder":"DOCKERFILE"},"deploy":{"healthcheckPath":"/api/health","healthcheckTimeout":30,"restartPolicyMaxRetries":10,"restartPolicyType":"ON_FAILURE"}}

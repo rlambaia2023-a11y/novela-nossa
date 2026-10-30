@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Novela Nossa — a história é nossa</title><style>
+:root{--bg:#201423;--panel:#2e1d33;--panel2:#3a2540;--ink:#f7f0e8;--muted:#c9b8c4;--accent:#f2c572;--pink:#e8a0b8;--line:#4a3149}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:wait}
+a{color:inherit}header{max-width:1240px;margin:auto;padding:22px 5%;display:flex;gap:30px;align-items:center;border-bottom:1px solid var(--line)}
+.brand{font-size:27px;text-decoration:none;letter-spacing:-1px}.brand span{color:var(--accent)}
+nav{margin-left:auto;display:flex;gap:22px}nav a{font-size:13px;text-decoration:none;color:var(--muted);font-family:Arial,sans-serif}
+main{max-width:1240px;margin:auto;padding:0 5% 80px}
+.hero{padding:64px 0 48px;display:grid;grid-template-columns:1.2fr 1fr;gap:50px;align-items:center}
+.eyebrow{color:var(--accent);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-family:Arial,sans-serif}
+.hero h1{font-weight:400;font-size:clamp(42px,6vw,72px);line-height:1.05;letter-spacing:-2px;margin:20px 0}.hero h1 em{color:var(--pink)}
+p{line-height:1.7;color:var(--muted);font-family:Arial,sans-serif}.hero p{max-width:440px}
+.btn{border:1px solid var(--line);border-radius:8px;padding:12px 18px;background:transparent;color:var(--ink);text-decoration:none;display:inline-block;font-size:14px;font-family:Arial,sans-serif}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#2a1a24;font-weight:bold}
+.art{height:290px;position:relative;display:flex;align-items:center;justify-content:center}
+.frame{height:260px;width:165px;border:1px solid #6d4f66;border-radius:90px 90px 12px 12px;background:linear-gradient(150deg,#7a4a63,#33203a 60%,#8a6a4a);transform:rotate(-8deg);box-shadow:0 25px 50px #120a15}
+.frame.two{position:absolute;transform:rotate(12deg) translateX(70px);background:linear-gradient(150deg,#c98a6a,#5c3550 60%,#2d385c);display:flex;align-items:center;justify-content:center}
+.playmark{font-size:58px}.art-caption{position:absolute;bottom:-6px;left:12%;font-size:10px;letter-spacing:3px;color:var(--muted);font-family:Arial,sans-serif}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:10px 0 50px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}.step b{color:var(--accent);font-size:26px}.step h3{margin:10px 0 6px;font-weight:400}.step p{font-size:13px;margin:0}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:25px 0}.toolbar h2{font-weight:400;font-size:28px;margin-right:auto}
+.field,input,textarea,select{background:var(--panel);border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:12px;width:100%;font-family:Arial,sans-serif}
+label{display:block;font-size:13px;margin:15px 0 6px;color:var(--muted);font-family:Arial,sans-serif}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:22px;text-align:left;color:var(--ink);font-family:Georgia,serif}
+.card h3{font-size:21px;margin:0 0 8px;font-weight:400}.card p{font-size:13px}.small{font-size:12px;color:var(--muted);font-family:Arial,sans-serif}
+.empty{padding:48px 25px;border:1px dashed var(--line);border-radius:12px;text-align:center;grid-column:1/-1}.empty h3{font-weight:400;font-size:26px;margin:0 0 10px}
+dialog{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:14px;max-width:900px;width:94%;padding:26px}dialog::backdrop{background:#0d0710db}
+.chapter-text{white-space:pre-wrap;line-height:1.85;font-size:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+.box{background:var(--panel);border:1px solid var(--line);padding:24px;border-radius:12px}
+.login{max-width:440px;margin:60px auto}.admin-layout{display:grid;grid-template-columns:280px 1fr;gap:28px;padding-top:30px}
+.char-row,.chap-row{border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0;background:var(--panel2)}
+.sug{border:1px solid var(--accent);border-radius:10px;padding:16px;margin:12px 0;background:var(--panel2)}
+.checks{display:flex;gap:10px;align-items:center;margin:16px 0}.checks input{width:auto}.checks label{margin:0;line-height:1.5}
+.hidden{display:none!important}.error{color:#ffb7b7;font-size:14px;font-family:Arial,sans-serif}
+#status{position:fixed;bottom:24px;right:24px;max-width:90vw;background:var(--accent);color:#2a1a24;padding:14px 22px;border-radius:8px;z-index:9;font-family:Arial,sans-serif}
+footer{max-width:1240px;margin:auto;padding:25px 5%;border-top:1px solid var(--line);display:flex;gap:20px;justify-content:space-between;color:var(--muted);font-size:12px;font-family:Arial,sans-serif}
+@media(max-width:760px){.hero,.steps,.grid,.admin-layout{grid-template-columns:1fr}.hero{padding-top:40px}.art{height:220px}nav{gap:12px}footer{flex-direction:column}}
+</style></head><body>
+<header><a class="brand" href="/">novela<span>nossa</span></a><nav><a href="/#catalogo">Ler novelas</a><a href="/estudio">Estúdio</a></nav></header>
+<main id="public">
+<section class="hero"><div><div class="eyebrow">Criada por você e por mim, capítulo a capítulo</div>
+<h1>Uma novela<br><em>que é nossa.</em></h1>
+<p>Não é catálogo de obra alheia. Aqui a história nasce de uma ideia sua, ganha personagens, segredos e ganchos, e cresce com a sua escolha a cada capítulo.</p>
+<a class="btn primary" href="#catalogo">Começar a ler ↓</a> <a class="btn" href="/estudio">Abrir o estúdio</a></div>
+<div class="art" aria-hidden="true"><div class="frame"></div><div class="frame two"><span class="playmark">✎</span></div><span class="art-caption">SUA PRÓXIMA HISTÓRIA COMEÇA AQUI</span></div></section>
+<section class="steps">
+<div class="step"><b>1</b><h3>Você dá a ideia</h3><p>Título, gênero, época, lugar e a premissa em uma frase. Sem ideia pronta? Comece pela novela-exemplo.</p></div>
+<div class="step"><b>2</b><h3>A gente cria junto</h3><p>Personagens com segredo e arco, capítulos com gancho no final. O estúdio sugere 3 continuações e você escolhe o rumo.</p></div>
+<div class="step"><b>3</b><h3>Publica e lê</h3><p>Capítulo a capítulo, com progresso salvo, tempo de leitura, narração em voz e exportação do texto.</p></div>
+</section>
+<section id="catalogo"><div class="toolbar"><h2>Novelas criadas aqui</h2><input id="search" style="max-width:280px" aria-label="Buscar novelas" placeholder="Buscar uma novela…"><select id="genre" aria-label="Filtrar gênero"><option value="">Todos os gêneros</option></select></div>
+<div id="catalog" class="grid"><div class="empty">Carregando novelas…</div></div>
+<p class="small">Histórias originais, criadas neste estúdio. Nada aqui é cópia, republicação ou link de obra de terceiros.</p></section>
+</main>
+<main id="admin" class="hidden">
+<form id="login" class="box login"><div class="eyebrow">Estúdio</div><h1 style="font-weight:400">Suas histórias,<br>do seu jeito.</h1><p>Entre para criar novelas, personagens e capítulos.</p>
+<label for="user">Usuário</label><input id="user" autocomplete="username" required><label for="pass">Senha</label><input id="pass" type="password" autocomplete="current-password" required>
+<p id="loginError" class="error" role="alert"></p><button class="btn primary" type="submit">Entrar no estúdio</button></form>
+<section id="dashboard" class="hidden"><div class="row" style="padding-top:30px"><h1 style="font-weight:400;margin-right:auto">Seu estúdio</h1><button id="logout" class="btn">Sair</button></div>
+<p class="small">O estúdio sugere continuações sem gastar cota de IA. A continuação com Gemini (modelo Lite, com cache e parada em 429) é o próximo passo, quando houver chave.</p>
+<div class="admin-layout"><aside><button id="newStory" class="btn primary">+ Nova novela</button><div id="adminList"></div></aside>
+<form id="editor" class="box"><h2 id="editorTitle" style="font-weight:400">Nova novela</h2>
+<label for="title">Título</label><input id="title" maxlength="180" required>
+<label for="description">Sinopse / premissa</label><textarea id="description" rows="4" maxlength="4000" required></textarea>
+<div class="row"><div><label for="genreF">Gênero</label><input id="genreF" maxlength="80" placeholder="Ex.: drama romântico" required></div><div><label for="tone">Tom</label><input id="tone" maxlength="300" placeholder="Ex.: afetivo, com humor"></div></div>
+<div class="row"><div><label for="era">Época</label><input id="era" maxlength="120" placeholder="Ex.: hoje"></div><div><label for="place">Lugar</label><input id="place" maxlength="180" placeholder="Ex.: Salvador, BA"></div></div>
+<h3>Personagens</h3><div id="chars"></div><button type="button" id="addChar" class="btn">+ Adicionar personagem</button>
+<h3>Capítulos</h3><p class="small">O gancho no final de cada capítulo é o que o próximo capítulo vai responder.</p><div id="chaps"></div><button type="button" id="addChap" class="btn">+ Adicionar capítulo</button>
+<button type="button" id="suggestBtn" class="btn primary" style="margin-top:16px">✦ Sugerir 3 continuações</button><div id="suggestions"></div>
+<div class="checks"><input id="published" type="checkbox"><label for="published">Publicar no catálogo de leitura</label></div>
+<div class="checks"><input id="original" type="checkbox" required><label for="original">Esta história é original, criada aqui, e não copia nem republica obra de terceiros.</label></div>
+<p id="saveError" class="error" role="alert"></p>
+<div class="row"><button class="btn primary" type="submit">Salvar novela</button><button id="deleteStory" type="button" class="btn hidden">Excluir novela</button></div>
+</form></div></section>
+</main>
+<footer><span>novelanossa · histórias originais, criadas em parceria.</span><span>Sem links de terceiros · só pt-BR</span></footer>
+<div id="status" class="hidden" role="status"></div>
+<dialog id="reader"><div class="row"><h2 id="readerTitle" style="font-weight:400"></h2><button id="closeReader" class="btn" style="flex:0">Fechar</button></div>
+<p id="readerMeta" class="small"></p><p id="readerSynopsis"></p>
+<div class="row"><button id="prevChap" class="btn">← Capítulo anterior</button><button id="nextChap" class="btn primary">Próximo capítulo →</button></div>
+<div class="row" style="margin-top:12px"><button id="listenBtn" class="btn">▶ Ouvir capítulo</button><button id="stopListen" class="btn">■ Parar voz</button><button id="exportBtn" class="btn">Baixar texto da novela</button></div>
+<h3 id="chapTitle" style="font-weight:400"></h3><div id="chapText" class="chapter-text"></div><p id="chapHook" class="small"></p>
+<div class="row" style="margin-top:18px"><button id="prevChap2" class="btn">← Capítulo anterior</button><button id="nextChap2" class="btn primary">Próximo capítulo →</button></div></dialog>
+<script>
+const $=id=>document.getElementById(id);
+let token=sessionStorage.getItem('novela-nossa-token')||'',stories=[],adminStories=[],editing=null,reading=null,chapIndex=0;
+function node(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+async function api(path,options={}){const r=await fetch(path,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{}),...options.headers}});const b=await r.json();if(!r.ok){if(r.status===401&&path.startsWith('/api/admin')){token='';sessionStorage.removeItem('novela-nossa-token');$('dashboard').classList.add('hidden');$('login').classList.remove('hidden');}throw new Error(b.error||'Não foi possível concluir.');}return b;}
+function notice(s){$('status').textContent=s;$('status').classList.remove('hidden');setTimeout(()=>$('status').classList.add('hidden'),4000);}
+function draw(){const q=$('search').value.toLocaleLowerCase('pt-BR'),g=$('genre').value;const list=stories.filter(s=>(s.title+' '+s.synopsis).toLocaleLowerCase('pt-BR').includes(q)&&(!g||g===s.genre));$('catalog').replaceChildren();if(!list.length){const e=node('div','empty');e.append(node('h3','',stories.length?'Nenhuma novela encontrada':'A primeira história ainda vai chegar.'),node('p','',stories.length?'Tente outro título ou gênero.':'Abra o estúdio e crie a primeira novela original.'));$('catalog').append(e);return;}for(const s of list){const b=node('button','card');b.append(node('h3','',s.title),node('div','small',s.genre+' · '+s.chapters.length+' capítulo(s) · '+s.characters.length+' personagem(ns)'),node('p','',s.synopsis));b.onclick=()=>openReader(s.id);$('catalog').append(b);}}
+function readingTime(txt){const w=txt.split(/\s+/).filter(Boolean).length;return Math.max(1,Math.round(w/200));}
+function showChap(){const c=reading.chapters[chapIndex];if(!c)return;$('readerTitle').textContent=reading.title;$('readerMeta').textContent=reading.genre+' · '+(reading.place||'')+' · capítulo '+(chapIndex+1)+' de '+reading.chapters.length+' · cerca de '+readingTime(c.text)+' min de leitura';$('readerSynopsis').textContent=reading.synopsis;$('chapTitle').textContent=c.title;$('chapText').textContent=c.text;$('chapHook').textContent=c.hook?('Gancho: '+c.hook):'';try{localStorage.setItem('novela-nossa-progress-'+reading.id,String(chapIndex));}catch{}window.speechSynthesis&&speechSynthesis.cancel();}
+async function openReader(id){reading=await api('/api/stories/'+id);try{chapIndex=Number(localStorage.getItem('novela-nossa-progress-'+id))||0;}catch{chapIndex=0;}if(chapIndex>=reading.chapters.length)chapIndex=0;if(!reading.chapters.length)return notice('Esta novela ainda não tem capítulos.');showChap();$('reader').showModal();}
+function goChap(d){const n=chapIndex+d;if(n<0||n>=reading.chapters.length)return notice(d<0?'Este é o primeiro capítulo.':'Este é o último capítulo publicado. Volte ao estúdio para continuar a história.');chapIndex=n;showChap();}
+$('prevChap').onclick=()=>goChap(-1);$('prevChap2').onclick=()=>goChap(-1);$('nextChap').onclick=()=>goChap(1);$('nextChap2').onclick=()=>goChap(1);
+$('closeReader').onclick=()=>{$('reader').close();window.speechSynthesis&&speechSynthesis.cancel();};
+$('listenBtn').onclick=()=>{if(!window.speechSynthesis)return notice('Seu navegador não tem narração por voz.');speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(reading.chapters[chapIndex].title+'. '+reading.chapters[chapIndex].text);u.lang='pt-BR';const v=speechSynthesis.getVoices().find(x=>x.lang&&x.lang.toLowerCase().startsWith('pt'));if(v)u.voice=v;speechSynthesis.speak(u);};
+$('stopListen').onclick=()=>{window.speechSynthesis&&speechSynthesis.cancel();};
+$('exportBtn').onclick=()=>{let t=reading.title+'\n'+reading.synopsis+'\n\nPersonagens:\n';reading.characters.forEach(c=>{t+='- '+c.name+' ('+c.role+')\n';});reading.chapters.forEach((c,i)=>{t+='\n'+c.title+'\n'+c.text+'\n';if(c.hook)t+='Gancho: '+c.hook+'\n';});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.download=reading.title.replace(/[^\w]+/g,'-')+'.txt';a.click();};
+$('search').oninput=draw;$('genre').onchange=draw;
+function charRow(c={}){const d=node('div','char-row');d.innerHTML='<label>Nome</label><input class="c-name" maxlength="120" required><label>Papel</label><input class="c-role" maxlength="300"><label>Segredo</label><input class="c-secret" maxlength="1000"><label>Arco (como ele muda)</label><input class="c-arc" maxlength="1000">';d.querySelector('.c-name').value=c.name||'';d.querySelector('.c-role').value=c.role||'';d.querySelector('.c-secret').value=c.secret||'';d.querySelector('.c-arc').value=c.arc||'';const b=node('button','btn','Remover personagem');b.type='button';b.onclick=()=>d.remove();d.append(b);$('chars').append(d);}
+function chapRow(c={}){const d=node('div','chap-row');d.innerHTML='<label>Título do capítulo</label><input class="h-title" maxlength="180" required><label>Texto</label><textarea class="h-text" rows="8" maxlength="20000" required></textarea><label>Gancho final (pergunta que fica no ar)</label><input class="h-hook" maxlength="1000">';d.querySelector('.h-title').value=c.title||'';d.querySelector('.h-text').value=c.text||'';d.querySelector('.h-hook').value=c.hook||'';const b=node('button','btn','Remover capítulo');b.type='button';b.onclick=()=>d.remove();d.append(b);$('chaps').append(d);}
+function edit(s=null){editing=s?.id||null;$('editor').reset();$('saveError').textContent='';$('suggestions').replaceChildren();$('editorTitle').textContent=s?'Editar novela':'Nova novela';for(const [f,k]of [['title','title'],['description','synopsis'],['genreF','genre'],['tone','tone'],['era','era'],['place','place']])$(f).value=s?.[k]||'';$('published').checked=!!s?.published;$('original').checked=false;$('chars').replaceChildren();(s?.characters||[]).forEach(charRow);$('chaps').replaceChildren();(s?.chapters||[]).forEach(chapRow);$('deleteStory').classList.toggle('hidden',!s);}
+async function loadAdmin(){adminStories=await api('/api/admin/stories');$('login').classList.add('hidden');$('dashboard').classList.remove('hidden');$('adminList').replaceChildren();for(const s of adminStories){const b=node('button','btn',s.title+(s.published?' · publicada':' · rascunho'));b.style.cssText='display:block;width:100%;text-align:left;margin:10px 0';b.onclick=()=>edit(s);$('adminList').append(b);}if(!adminStories.length)$('adminList').append(node('p','small','Seu estúdio está vazio. Crie a primeira novela.'));}
+$('login').onsubmit=async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;try{const r=await api('/api/login',{method:'POST',body:JSON.stringify({username:$('user').value,password:$('pass').value})});token=r.token;sessionStorage.setItem('novela-nossa-token',token);$('pass').value='';$('loginError').textContent='';await loadAdmin();edit();}catch(err){$('loginError').textContent=err.message;}finally{b.disabled=false;}};
+$('logout').onclick=async()=>{try{await api('/api/admin/logout',{method:'POST'});}catch{}token='';sessionStorage.removeItem('novela-nossa-token');location.href='/estudio';};
+$('newStory').onclick=()=>edit();$('addChar').onclick=()=>charRow();$('addChap').onclick=()=>chapRow();
+$('suggestBtn').onclick=async()=>{if(!editing)return notice('Salve a novela primeiro, depois peça continuações.');const b=$('suggestBtn');b.disabled=true;try{const r=await api('/api/admin/suggest',{method:'POST',body:JSON.stringify({storyId:editing})});$('suggestions').replaceChildren(node('p','small',r.note));r.suggestions.forEach(s=>{const d=node('div','sug');d.append(node('h3','',s.kind+' — '+s.title),node('p','',s.text),node('p','small','Gancho sugerido: '+s.hook));const u=node('button','btn primary','Usar como próximo capítulo');u.onclick=()=>{chapRow({title:s.title,text:s.text,hook:s.hook});notice('Capítulo adicionado como rascunho. Edite o texto antes de salvar.');};d.append(u);$('suggestions').append(d);});}catch(err){notice(err.message);}finally{b.disabled=false;}};
+$('editor').onsubmit=async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;$('saveError').textContent='';try{const characters=Array.from($('chars').children).map(r=>({name:r.querySelector('.c-name').value,role:r.querySelector('.c-role').value,secret:r.querySelector('.c-secret').value,arc:r.querySelector('.c-arc').value}));const chapters=Array.from($('chaps').children).map(r=>({title:r.querySelector('.h-title').value,text:r.querySelector('.h-text').value,hook:r.querySelector('.h-hook').value}));const result=await api('/api/admin/stories',{method:'POST',body:JSON.stringify({id:editing,title:$('title').value,synopsis:$('description').value,genre:$('genreF').value,tone:$('tone').value,era:$('era').value,place:$('place').value,published:$('published').checked,originalConfirmed:$('original').checked,characters,chapters})});await loadAdmin();edit(adminStories.find(s=>s.id===result.id));notice('Novela salva.');}catch(err){$('saveError').textContent=err.message;}finally{b.disabled=false;}};
+$('deleteStory').onclick=async()=>{if(!editing||!confirm('Excluir esta novela, seus personagens e capítulos? Esta ação não pode ser desfeita.'))return;try{await api('/api/admin/stories/'+editing,{method:'DELETE'});await loadAdmin();edit();notice('Novela excluída.');}catch(err){$('saveError').textContent=err.message;}};
+async function start(){if(location.pathname==='/estudio'){$('public').classList.add('hidden');$('admin').classList.remove('hidden');if(token)try{await loadAdmin();edit();}catch(e){$('loginError').textContent=e.message;}return;}try{stories=await api('/api/stories');for(const g of [...new Set(stories.map(s=>s.genre))].sort()){const o=node('option','',g);o.value=g;$('genre').append(o);}draw();}catch{$('catalog').replaceChildren(node('p','error','Não foi possível carregar as novelas. Atualize a página para tentar novamente.'));}}start();
+</script></body></html>
