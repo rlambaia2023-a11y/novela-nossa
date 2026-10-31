@@ -20,7 +20,7 @@ test('novela nossa: saúde, criação, sugestão, leitura e exclusão', async ()
   try {
     const health = await waitHealth();
     assert.equal(health.ok, true);
-    assert.equal(health.stories, 1); // novela-exemplo original semeada
+    assert.equal(health.stories, 3); // 3 novelas originais semeadas: Maré, Costura e Trem
     const login = await (await fetch(`http://localhost:${PORT}/api/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'admin', password: 'senha-forte-teste-123' }) })).json();
     assert.ok(login.token);
     const auth = { 'Content-Type': 'application/json', Authorization: 'Bearer ' + login.token };

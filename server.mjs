@@ -43,6 +43,40 @@ function seed() {
     ['Capítulo 2 — O barco de Caio', 'Na manhã seguinte, um barco desconhecido atracou no cais. Caio desceu com uma caixa de madeira nas mãos e o olhar de quem ensaiou a frase mil vezes. "Vim devolver o que é seu", disse ele, sem olhar para Marina. Dentro da caixa, embrulhado em pano azul, estava o diário do antigo faroleiro. Dona Zefa, da janela, fechou a cortina devagar. Ela sabia o que aquele diário continha.', 'O que o diário revela sobre a família de Marina?'],
   ];
   chaps.forEach((c, i) => db.prepare('INSERT INTO chapters VALUES(?,?,?,?,?,?)').run(id(), sid, c[0], i + 1, c[1], c[2]));
+  // Duas novelas originais completas, com arco fechado (início, virada,
+  // revelação e desfecho). Nenhuma copia enredo, personagem ou cena de
+  // obra existente; só usam os parâmetros do gênero: segredo, rivalidade,
+  // segunda chance, reparação de uma injustiça e um gancho por capítulo.
+  const addStory = (title, genre, synopsis, tone, era, place, chars2, chaps2) => {
+    const s = id(), tt = nowISO();
+    db.prepare('INSERT INTO stories VALUES(?,?,?,?,?,?,?,?,?,?)').run(s, title, genre, synopsis, tone, era, place, 1, tt, tt);
+    chars2.forEach((c, i) => db.prepare('INSERT INTO characters VALUES(?,?,?,?,?,?,?)').run(id(), s, c[0], c[1], c[2], c[3], i + 1));
+    chaps2.forEach((c, i) => db.prepare('INSERT INTO chapters VALUES(?,?,?,?,?,?)').run(id(), s, c[0], i + 1, c[1], c[2]));
+  };
+  addStory('A Costura de Lina', 'Drama romântico', 'Em Cachoeira, uma costureira herda o ateliê da avó e precisa decidir entre vender para a família rival ou costurar a própria história, quando um antigo amor volta à cidade.', 'Afetivo, com humor e dignidade', 'Hoje', 'Cachoeira, BA', [
+    ['Lina', 'Costureira e herdeira do ateliê', 'Ela nunca terminou o vestido de noiva da mãe.', 'Aprender que herdar não é repetir, é escolher.'],
+    ['Rafael', 'Filho da família rival, de volta à cidade', 'Ele voltou não para comprar, mas para devolver um molde antigo.', 'Trocar a disputa herdada por um acordo honesto.'],
+    ['Dona Cida', 'Costureira aposentada e amiga da avó', 'Ela guardou as cartas da avó de Lina por anos.', 'Contar a verdade no momento certo, sem ferir.'],
+  ], [
+    ['Capítulo 1 — O ateliê vazio', 'Lina abriu a porta do ateliê e o cheiro de pano e café a recebeu como um abraço. A avó tinha deixado tudo no lugar: tesouras, moldes, uma máquina antiga e um bilhete preso no espelho. "Costura para quem precisa, não para quem paga mais", dizia o bilhete. Naquela tarde, chegou a primeira proposta de compra, com um valor alto e um prazo curto.', 'Quem quer tanto o ateliê, e por quê?'],
+    ['Capítulo 2 — O rapaz da porta', 'Rafael apareceu na porta com uma caixa de moldes e um pedido estranho. Ele não queria comprar nada. Queria devolver o que a família dele tinha levado anos atrás, quando as duas famílias brigaram por causa de um vestido. Lina não sabia se acreditava, mas o molde dentro da caixa tinha a letra da avó.', 'O molde é verdadeiro, ou é só uma forma de entrar?'],
+    ['Capítulo 3 — O vestido inacabado', 'No fundo do armário, Lina achou o vestido inacabado da mãe, guardado com alfinetes e um papel. O papel dizia que o vestido nunca foi terminado porque a mãe escolheu outro caminho, não porque faltou pano. Pela primeira vez, Lina entendeu que terminar aquele vestido era uma escolha dela, não uma dívida.', 'Lina vai terminar o vestido, ou vai começar um novo?'],
+    ['Capítulo 4 — A proposta', 'A família rival aumentou a oferta e colocou uma condição: se Lina não vendesse em uma semana, perderia o fornecedor de tecidos da cidade. Rafael ficou entre os dois lados e fez uma proposta diferente: um acordo em que o ateliê ficava com Lina e a família dele encomendava os vestidos de festa. Era um bom acordo, mas exigia confiança de quem nunca confiou.', 'Lina aceita um acordo com quem já a prejudicou?'],
+    ['Capítulo 5 — A carta na festa', 'Na festa da cidade, Dona Cida entregou a Lina as cartas da avó. Nelas, a avó contava que a briga antiga tinha começado por um mal-entendido, não por maldade, e pedia que as duas famílias costurassem juntas de novo. Lina leu a carta em voz alta, sem apontar culpados, e a praça ficou em silêncio. Depois do silêncio, veio o aplauso.', 'Com a verdade na mesa, o que muda entre as famílias?'],
+    ['Capítulo 6 — O primeiro vestido novo', 'Lina não vendeu o ateliê. Costurou o primeiro vestido novo com o molde devolvido e o pano que sobrou, e vestiu a si mesma na inauguração. Rafael encomendou o primeiro vestido de festa, a família rival pagou o preço justo, e Dona Cida chorou de orgulho. O ateliê voltou a ter fila na porta, desta vez por escolha, não por herança.', 'Fim da novela: Lina costura, enfim, para si.'],
+  ]);
+  addStory('O Trem das Sete', 'Drama familiar com romance', 'Na estação de uma cidade do interior da Bahia, uma professora volta para cuidar do pai e reencontra o amigo de infância que nunca partiu, enquanto um bilhete antigo ameaça mudar o que todos lembram.', 'Afetivo, com memória e recomeço', 'Hoje', 'Interior da Bahia', [
+    ['Alice', 'Professora de volta à cidade natal', 'Ela saiu sem se despedir direito de Theo.', 'Aprender a ficar sem abrir mão de si.'],
+    ['Theo', 'Guardião da estação', 'Ele guardou um bilhete que Alice escreveu na adolescência.', 'Dizer o que sentiu, mesmo tarde.'],
+    ['Seu Jonas', 'Pai de Alice, ex-ferroviário', 'Ele trocou um turno para salvar um amigo, e nunca contou.', 'Aceitar ajuda da filha sem perder a dignidade.'],
+  ], [
+    ['Capítulo 1 — Volta para casa', 'Alice desceu do ônibus com uma mala e um plano simples: cuidar do pai por um tempo e voltar para a capital. A estação estava igual, só mais quieta. Theo estava lá, com o mesmo sorriso e um uniforme novo de guardião. Ele a reconheceu antes de ela falar qualquer coisa.', 'Por que Theo nunca partiu, se sempre quis?'],
+    ['Capítulo 2 — O bilhete', 'Arrumando o quarto antigo, Alice achou um bilhete que ela mesma tinha escrito aos dezessete anos e nunca entregou. Nele, ela prometia voltar no trem das sete. Theo, sem saber do bilhete, contou que guardava os bilhetes de todos os trens das sete, como quem guarda promessas. Alice ficou sem palavras.', 'Theo sabe do bilhete, ou guarda só os bilhetes dos trens?'],
+    ['Capítulo 3 — A estação à noite', 'À noite, a estação ficava com Theo e com as histórias do pai de Alice. Seu Jonas contou, aos poucos, que tinha trocado um turno para salvar um amigo e que isso custou a promoção dele. Alice entendeu, enfim, por que o pai nunca falava do passado com orgulho, mas com paz.', 'O que o pai sacrificou, e por quem?'],
+    ['Capítulo 4 — A escolha de Theo', 'Chegou uma vaga na capital para Theo, o trabalho que ele sempre quis. Aceitar significava partir no trem das sete, o mesmo trem da promessa de Alice. Recusar significava ficar na estação, perto dela e do pai dela. Theo pediu um dia para decidir, e Alice prometeu não interferir.', 'Theo parte, ou fica?'],
+    ['Capítulo 5 — A verdade de Jonas', 'Seu Jonas chamou os dois e contou tudo, sem rodeios: o amigo que ele salvou era o pai de Theo. Por isso, Theo tinha crescido cuidando da estação como quem paga uma dívida que não era dele. Jonas pediu que Theo escolhesse por si, não por gratidão, e que Alice ficasse por amor, não por culpa.', 'Livres da dívida, o que cada um escolhe de verdade?'],
+    ['Capítulo 6 — O trem das sete', 'No dia seguinte, o trem das sete chegou na hora. Theo não embarcou. Alice não voltou para a capital. Ela ficou para ensinar na escola da cidade, Theo ficou na estação, e Seu Jonas voltou a contar histórias, agora com os dois ouvindo. A promessa do bilhete, enfim, se cumpriu de outro jeito: ninguém partiu sozinho.', 'Fim da novela: a promessa se cumpre sem ninguém partir sozinho.'],
+  ]);
 }
 seed();
 

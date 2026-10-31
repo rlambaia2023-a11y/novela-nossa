@@ -56,3 +56,29 @@ volume persistente em produção, senão um redeploy apaga o banco.
 ```sh
 npm test
 ```
+
+## Parâmetros do estilo (pesquisa, sem copiar obra alheia)
+
+Parâmetros usados para criar novelas novas neste estilo, a partir de
+referências públicas sobre o gênero, não de enredos copiados:
+
+- Melodrama: tensão entre vício e virtude, reparação de uma injustiça e
+  busca pela realização amorosa.
+- Cada capítulo movimenta a história e termina com um gancho, uma
+  pergunta concreta que o próximo capítulo responde.
+- Arquétipos reconhecíveis logo no início, com camadas depois:
+  protagonista comum com talento escondido, rival com segredo, aliado
+  improvável, amor do passado que volta, segunda chance, romance
+  proibido por circunstâncias, não por vilania vazia.
+- Novela curta: um fio principal por capítulo, poucos lugares, ritmo
+  rápido, espiral de tensão até o clímax e desfecho fechado.
+
+## Novelas completas semeadas (originais)
+
+- "A Maré de Itapuã" (exemplo, 2 capítulos, arco em aberto para
+  continuar no estúdio).
+- "A Costura de Lina" (completa, 6 capítulos, Cachoeira, BA).
+- "O Trem das Sete" (completa, 6 capítulos, interior da Bahia).
+
+As duas novas entram no catálogo na primeira execução, pelo seed do
+servidor, e chegam à Railway no próximo deploy a partir do main.
