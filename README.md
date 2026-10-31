@@ -19,6 +19,14 @@ capítulo a capítulo com a escolha de quem está criando.
 5. **Leitura completa**: progresso salvo no navegador, tempo de
    leitura, narração em voz do próprio navegador (pt-BR) e
    exportação da novela em texto.
+6. **Contribuições com aprovação**: qualquer visitante, sem login,
+   pode enviar uma ideia de novela nova ou uma continuação de uma
+   novela que já existe, na seção "Contribua" da página inicial.
+   Nada publica sozinho: a contribuição fica pendente numa fila
+   dentro do estúdio. Aprovar uma ideia cria um rascunho (não
+   publica); aprovar uma continuação publica o capítulo na novela.
+   Descartar não publica nada. Limite de 10 contribuições por hora
+   por visitante, contra spam.
 
 ## O que NÃO veio dos zips
 

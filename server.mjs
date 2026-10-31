@@ -20,7 +20,8 @@ db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;
 CREATE TABLE IF NOT EXISTS stories(id TEXT PRIMARY KEY,title TEXT NOT NULL,genre TEXT NOT NULL,synopsis TEXT NOT NULL,tone TEXT NOT NULL,era TEXT NOT NULL,place TEXT NOT NULL,published INTEGER NOT NULL,created TEXT NOT NULL,updated TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS characters(id TEXT PRIMARY KEY,story_id TEXT NOT NULL REFERENCES stories(id) ON DELETE CASCADE,name TEXT NOT NULL,role TEXT NOT NULL,secret TEXT NOT NULL,arc TEXT NOT NULL,position INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS chapters(id TEXT PRIMARY KEY,story_id TEXT NOT NULL REFERENCES stories(id) ON DELETE CASCADE,title TEXT NOT NULL,position INTEGER NOT NULL,text TEXT NOT NULL,hook TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS sessions(hash TEXT PRIMARY KEY,expires INTEGER NOT NULL);`);
+CREATE TABLE IF NOT EXISTS sessions(hash TEXT PRIMARY KEY,expires INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS contributions(id TEXT PRIMARY KEY,kind TEXT NOT NULL,story_id TEXT,title TEXT NOT NULL,genre TEXT NOT NULL,synopsis TEXT NOT NULL,tone TEXT NOT NULL,era TEXT NOT NULL,place TEXT NOT NULL,text TEXT NOT NULL,hook TEXT NOT NULL,author TEXT NOT NULL,status TEXT NOT NULL,created TEXT NOT NULL);`);
 db.exec('DELETE FROM sessions');
 const tokenHash = t => createHash('sha256').update(t).digest('hex');
 const attempts = new Map();
@@ -82,6 +83,8 @@ seed();
 
 const json = (res, status, obj) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(obj)); };
 function text(v, max, required = true) { if (typeof v !== 'string' || v.length > max || (required && !v.trim())) throw new Error('Campo inválido ou muito longo.'); return v.trim(); }
+function textOpt(v, max) { if (v === undefined || v === null) return ''; if (typeof v !== 'string' || v.length > max) throw new Error('Campo inválido ou muito longo.'); return v.trim(); }
+const contribAttempts = new Map();
 async function body(req) { let s = ''; for await (const chunk of req) { s += chunk; if (Buffer.byteLength(s) > 524288) { const e = new Error('Solicitação muito grande.'); e.status = 413; throw e; } } try { return JSON.parse(s); } catch { throw new Error('JSON inválido.'); } }
 function authorized(req) { const t = req.headers.authorization?.replace(/^Bearer /, '') || ''; if (!t) return false; const row = db.prepare('SELECT expires FROM sessions WHERE hash=?').get(tokenHash(t)); return !!row && row.expires > Date.now(); }
 function full(s, admin = false) {
@@ -119,6 +122,27 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && p === '/api/health') return json(res, 200, { ok: true, app: 'novela-nossa', stories: db.prepare('SELECT COUNT(*) c FROM stories').get().c, chapters: db.prepare('SELECT COUNT(*) c FROM chapters').get().c, ai: 'sugestoes-locais', gemini: 'pendente-chave' });
     if (req.method === 'GET' && p === '/api/stories') return json(res, 200, catalog());
     if (req.method === 'GET' && p.startsWith('/api/stories/')) { const s = db.prepare('SELECT * FROM stories WHERE id=? AND published=1').get(p.split('/').pop()); if (!s) return json(res, 404, { error: 'Novela não encontrada.' }); return json(res, 200, full(s)); }
+    if (req.method === 'POST' && p === '/api/contributions') {
+      // Contribuição pública, sem login: ideia nova ou continuação.
+      // Nada publica sozinho: fica pendente até o autor aprovar no estúdio.
+      const ip = req.socket.remoteAddress, now = Date.now();
+      for (const [k, v] of contribAttempts) if (v.until < now) contribAttempts.delete(k);
+      const a = contribAttempts.get(ip) || { count: 0, until: now + 3600000 }; if (a.count >= 10) return json(res, 429, { error: 'Muitas contribuições nesta hora. Tente mais tarde.' });
+      const b = await body(req); a.count++; contribAttempts.set(ip, a);
+      if (b.originalConfirmed !== true) throw new Error('Confirme que a contribuição é original, criada por você, e não copia obra de terceiros.');
+      const kind = b.kind; if (kind !== 'ideia' && kind !== 'continuacao') throw new Error('Tipo de contribuição inválido.');
+      const author = textOpt(b.author, 120);
+      let row;
+      if (kind === 'ideia') {
+        row = { kind, story_id: '', title: text(b.title, 180), genre: textOpt(b.genre, 80) || 'A definir', synopsis: text(b.synopsis, 4000), tone: textOpt(b.tone, 300), era: textOpt(b.era, 120), place: textOpt(b.place, 180), text: '', hook: '' };
+      } else {
+        const storyId = text(b.story_id, 80);
+        const s = db.prepare('SELECT id FROM stories WHERE id=? AND published=1').get(storyId); if (!s) return json(res, 404, { error: 'Novela não encontrada.' });
+        row = { kind, story_id: storyId, title: textOpt(b.title, 180), genre: '', synopsis: '', tone: '', era: '', place: '', text: text(b.text, 20000), hook: textOpt(b.hook, 1000) };
+      }
+      const cid = id(); db.prepare('INSERT INTO contributions VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)').run(cid, row.kind, row.story_id, row.title, row.genre, row.synopsis, row.tone, row.era, row.place, row.text, row.hook, author, 'pendente', nowISO());
+      return json(res, 200, { ok: true, id: cid });
+    }
     if (req.method === 'POST' && p === '/api/login') {
       const ip = req.socket.remoteAddress, now = Date.now();
       for (const [k, v] of attempts) if (v.until < now) attempts.delete(k);
@@ -159,6 +183,28 @@ const server = http.createServer(async (req, res) => {
         } catch (e) { db.exec('ROLLBACK'); throw e; } return json(res, 200, { id: sid });
       }
       if (p.startsWith('/api/admin/stories/') && req.method === 'DELETE') { db.prepare('DELETE FROM stories WHERE id=?').run(p.split('/').pop()); return json(res, 200, { ok: true }); }
+      if (p === '/api/admin/contributions' && req.method === 'GET') return json(res, 200, db.prepare("SELECT * FROM contributions ORDER BY CASE WHEN status='pendente' THEN 0 ELSE 1 END, created DESC").all());
+      if (p.startsWith('/api/admin/contributions/') && req.method === 'DELETE') { db.prepare('DELETE FROM contributions WHERE id=?').run(p.split('/').pop()); return json(res, 200, { ok: true }); }
+      if (p.startsWith('/api/admin/contributions/') && req.method === 'POST') {
+        const parts = p.split('/'); const cid = parts[4], action = parts[5];
+        const c = db.prepare('SELECT * FROM contributions WHERE id=?').get(cid); if (!c) return json(res, 404, { error: 'Contribuição não encontrada.' });
+        if (action === 'discard') { if (c.status !== 'pendente') throw new Error('Só contribuições pendentes podem ser descartadas.'); db.prepare("UPDATE contributions SET status='descartada' WHERE id=?").run(cid); return json(res, 200, { ok: true }); }
+        if (action === 'approve') {
+          if (c.status !== 'pendente') throw new Error('Só contribuições pendentes podem ser aprovadas.');
+          const t = nowISO();
+          if (c.kind === 'ideia') {
+            const sid = id(); db.prepare('INSERT INTO stories VALUES(?,?,?,?,?,?,?,?,?,?)').run(sid, c.title, c.genre, c.synopsis, c.tone, c.era, c.place, 0, t, t);
+            db.prepare("UPDATE contributions SET status='aprovada' WHERE id=?").run(cid); return json(res, 200, { ok: true, storyId: sid });
+          }
+          const s = db.prepare('SELECT * FROM stories WHERE id=?').get(c.story_id); if (!s) return json(res, 404, { error: 'A novela desta continuação não existe mais.' });
+          const pos = (db.prepare('SELECT COALESCE(MAX(position),0) m FROM chapters WHERE story_id=?').get(c.story_id).m || 0) + 1;
+          const title = c.title || ('Capítulo ' + pos + ' — Continuação enviada por um leitor');
+          db.prepare('INSERT INTO chapters VALUES(?,?,?,?,?,?)').run(id(), c.story_id, title, pos, c.text, c.hook);
+          db.prepare('UPDATE stories SET updated=? WHERE id=?').run(t, c.story_id);
+          db.prepare("UPDATE contributions SET status='aprovada' WHERE id=?").run(cid); return json(res, 200, { ok: true, storyId: c.story_id, chapterPosition: pos });
+        }
+        return json(res, 404, { error: 'Ação não encontrada.' });
+      }
       return json(res, 404, { error: 'Rota não encontrada.' });
     }
     if (req.method === 'GET' && (p === '/' || p === '/estudio')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' }); return res.end(html); }
